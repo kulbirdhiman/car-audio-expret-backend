@@ -59,3 +59,42 @@ const upload = multer({
 });
 
 export default upload;
+
+
+// import multer from "multer";
+// import path from "path";
+
+// // Store file temporarily on disk
+// const storage = multer.diskStorage({
+//   destination: (_req, _file, cb) => {
+//     cb(null, "/tmp"); // Use tmp directory (adjust if needed)
+//   },
+//   filename: (_req, file, cb) => {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(null, uniqueSuffix + path.extname(file.originalname));
+//   },
+// });
+
+// const fileFilter = (_req: any, file: Express.Multer.File, cb: any) => {
+//   const allowedMimeTypes = [
+//     "image/jpeg",
+//     "image/png",
+//     "image/webp",
+//     "application/pdf",
+//     "video/mp4"
+//   ];
+
+//   if (allowedMimeTypes.includes(file.mimetype)) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Invalid file type. Only JPG, PNG, WEBP, PDF, and MP4 are allowed."));
+//   }
+// };
+
+// const upload = multer({
+//   storage,
+//   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+//   fileFilter,
+// });
+
+// export default upload;

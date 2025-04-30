@@ -80,9 +80,9 @@ router.post(
       }
       return true;
     }),
-    // body("images")
-    //   .isArray({ min: 1 })
-    //   .withMessage("Please upload atleast one image"),
+    body("images")
+      .isArray({ min: 1 })
+      .withMessage("Please upload atleast one image"),
     body("discount_price")
       .optional()
       .custom((value, { req }) => {

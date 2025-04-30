@@ -14,3 +14,4 @@ router.get("/hot_deals", hotDeals);
  
 
 export default router;
+``

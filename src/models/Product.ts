@@ -176,18 +176,18 @@ Product.init(
         this.setDataValue("color_price", JSON.stringify(value));
       },
     },
-    // images: {
-    //   type: DataTypes.TEXT,
-    //   allowNull: false,
-    //   defaultValue: "[]",
-    //   get() {
-    //     const rawValue = this.getDataValue("images");
-    //     return rawValue ? JSON.parse(rawValue) : [];
-    //   },
-    //   set(value: any) {
-    //     this.setDataValue("images", JSON.stringify(value));
-    //   },
-    // },
+    images: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: "[]",
+      get() {
+        const rawValue = this.getDataValue("images");
+        return rawValue ? JSON.parse(rawValue) : [];
+      },
+      set(value: any) {
+        this.setDataValue("images", JSON.stringify(value));
+      },
+    },
     multi_models: {
       type: DataTypes.TEXT,
       allowNull: false,

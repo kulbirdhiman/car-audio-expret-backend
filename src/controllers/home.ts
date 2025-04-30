@@ -143,10 +143,10 @@ export const audioEquipments = async (
   res: Response
 ): Promise<void> => {
   try {
-    const aplifierId = 1;
-    const speakerId = 2;
-    const subBooferId =3;
-    const subBooferBoxId = 4;
+    const aplifierId = 66;
+    const speakerId = 67;
+    const subBooferId = 68;
+    const subBooferBoxId = 69;
 
     const AmpliFier = await Category.findOne({ where: { id: aplifierId } });
     const Speaker = await Category.findOne({ where: { id: speakerId } });
@@ -173,21 +173,25 @@ export const audioEquipments = async (
       category_id: subBooferBoxId,
     };
 
-    const ampiFierProduct = await Product.findOne({
+    const ampiFierProduct = await Product.findAll({
       where: AmplifierConditions,
-      order: Sequelize.literal("RAND()"), // Fetch random records
+      order: Sequelize.literal("RAND()"),
+      limit: 5,
     });
-    const speakerProduct = await Product.findOne({
+    const speakerProduct = await Product.findAll({
       where: speakerConditions,
       order: Sequelize.literal("RAND()"),
+      limit: 5,
     });
-    const subBooferProduct = await Product.findOne({
+    const subBooferProduct = await Product.findAll({
       where: subBooferConditions,
       order: Sequelize.literal("RAND()"),
+      limit: 5,
     });
-    const subBooferBoxProduct = await Product.findOne({
+    const subBooferBoxProduct = await Product.findAll({
       where: subBooferBoxConditions,
       order: Sequelize.literal("RAND()"),
+      limit: 5,
     });
 
     const result = {
@@ -232,19 +236,19 @@ export const weekelyHighLights = async (
       where: LinuxStereoConditions,
       // order: [["id", "DESC"]], 
       order: Sequelize.literal("RAND()"),
-      limit: 5,
+      limit: 10,
     });
     const satnavProduct = await Product.findAll({
       where: satnavStereoConditions,
       // order: [["id", "DESC"]],  
       order: Sequelize.literal("RAND()"),
-      limit: 5,
+      limit: 10,
     });
     const carPlayProduct = await Product.findAll({
       where: carPlayConditions,
       // order: [["id", "DESC"]], 
       order: Sequelize.literal("RAND()"),
-      limit: 5,
+      limit: 10,
     });
 
     const result = {

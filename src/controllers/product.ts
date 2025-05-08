@@ -387,40 +387,30 @@ export const listProductForShop = async (
         { slug: { [Op.like]: `%${search}%` } },
         { sku: { [Op.like]: `%${search}%` } },
         { search_keywords: { [Op.like]: `%${search}%` } },
-        // Sequelize.where(
-        //   Sequelize.fn(
-        //     "REGEXP_REPLACE",
-        //     Sequelize.col("name"),
-        //     "[^a-zA-Z0-9]",
-        //     " "
-        //   ),
-        //   { [Op.like]: `%${search}%` }
-        // ),
       ];
     }
- 
+
     const orConditions: any[] = [
-      { ...queryConditions, ...inAllCondition }, // no category/model/year filters
+      { ...queryConditions, ...inAllCondition }, // Products visible to all
     ];
 
     const filterConditions: any = {
       status: STATUS.active,
       in_all: { [Op.ne]: 1 },
     };
+
+    // Category condition
     if (category) {
-  
-      
       const result = await Department.findOne({
         where: { slug: category },
       });
 
       if (result) {
-        
         filterConditions.department_id = result.id;
- 
       }
     }
-    // Company condition
+
+    // Company (Category) condition
     if (company) {
       const result = await Category.findOne({ where: { slug: company } });
       if (result) {
@@ -431,9 +421,8 @@ export const listProductForShop = async (
           {
             [Op.or]: [
               { category_id: categoryId },
-
               Sequelize.literal(
-                `JSON_CONTAINS(multi_categories, '${categoryId}', '$')`
+                `JSON_VALID(multi_categories) AND JSON_CONTAINS(multi_categories, '${categoryId}', '$')`
               ),
             ],
           },
@@ -441,31 +430,29 @@ export const listProductForShop = async (
       }
     }
 
-    // Model condition
-    if (model ) {
+    // Car Model condition
+    if (model) {
       const result = await CarModel.findOne({ where: { slug: model } });
       if (result) {
-     
-        
         const modelIdCondition = result.parent_id
           ? { [Op.or]: [result.id, result.parent_id] }
           : result.id;
-          filterConditions[Op.and] = [
+
+        filterConditions[Op.and] = [
           ...(filterConditions[Op.and] || []),
           {
             [Op.or]: [
               { model_id: modelIdCondition },
               Sequelize.literal(
-                `JSON_CONTAINS(multi_models, '${result.id}', '$')`
+                `JSON_VALID(multi_models) AND JSON_CONTAINS(multi_models, '${result.id}', '$')`
               ),
             ],
           },
         ];
-
-        // Sequelize.literal(`JSON_CONTAINS(multi_models, '${result.id}', '$')`),
       }
     }
 
+    // Year range condition
     if (Number(year) > 0) {
       filterConditions[Op.and] = [
         ...(filterConditions[Op.and] || []),
@@ -473,29 +460,21 @@ export const listProductForShop = async (
         { to: { [Op.gte]: year } },
       ];
     }
- 
-    if (
-      category ||
-      company ||
-      model ||
-      (Number(year) > 0)||
-      search
-    ) {
+
+    // If any filters are applied, include them
+    if (category || company || model || Number(year) > 0 || search) {
       if (search && typeof search === "string") {
         filterConditions[Op.or] = queryConditions[Op.or];
       }
       orConditions.push(filterConditions);
     }
 
-    // console.log(queryConditions,"queryConditions",queryConditions['[Symbol(or)]']);
-
     const { rows, count } = await Product.findAndCountAll({
-      where:     {[Op.or]: orConditions },
+      where: { [Op.or]: orConditions },
       order: [["name", "ASC"]],
-      limit: limit,
+      limit,
       offset,
     });
- 
 
     RECORDWITH_PAGINATION_FETCHED_RESPONSE(
       res,
@@ -505,13 +484,12 @@ export const listProductForShop = async (
       count,
       limit
     );
-
-    return;
   } catch (error) {
-    // console.log(error);
+    console.error(error);
     SERVER_ERROR_RESPONSE(res);
   }
 };
+
 
 // detail for shop
 
@@ -525,6 +503,7 @@ export const productDetailForShop = async (
     const result = await Product.findOne({
       where: { slug: slug },
     });
+    console.log(result , "this is texting")
     const category_id = (result as any).category_id;
     const department_id = (result as any).department_id;
     const product_id = (result as any).id;
@@ -592,8 +571,9 @@ export const productDetailForShop = async (
     });
     return;
   } catch (error) {
-    console.log(error);
-    SERVER_ERROR_RESPONSE(res);
+    console.log("this is error")
+    // console.log(error);
+    // SERVER_ERROR_RESPONSE(res);
   }
 };
 

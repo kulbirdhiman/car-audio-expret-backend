@@ -2,7 +2,7 @@ import express from "express";
 import { body } from "express-validator";
 import validateRequest from "../middlewares/validateRequest";
 import { DEPARTMENT_VIEW } from "../helper/constant";
-import { createDepartment, deleteDepartment, listDepartment, updateDepartmentOrder, upsertDepartment } from "../controllers/department";
+import { createDepartment, deleteDepartment, listCarProductDepartments, listDepartment, updateDepartmentOrder, upsertDepartment } from "../controllers/department";
 import { authenticateUser } from "../middlewares/auth";
 
 const router = express.Router();
@@ -60,6 +60,7 @@ router.put(
  
   updateDepartmentOrder
 );
+router.get("/departments/car-products", listCarProductDepartments);
 
 
 export default router;

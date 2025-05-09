@@ -163,3 +163,22 @@ export const updateDepartmentOrder = async (
     SERVER_ERROR_RESPONSE(res);
   }
 };
+export const listCarProductDepartments = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const result = await Department.findAll({
+      where: {
+        is_car_product: true,
+        status: STATUS.active, // Optional: if you only want active items
+      },
+      order: [["order_index", "ASC"]],
+    });
+
+    RECORD_FETCHED_RESPONSE(res, RECORD_GET_MSG, { result });
+  } catch (error) {
+    console.error("Error fetching car product departments:", error);
+    SERVER_ERROR_RESPONSE(res);
+  }
+};

@@ -57,6 +57,10 @@ Department.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+        is_car_product: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false, // Set default to false if not provided
+    },
     status: {
       type: DataTypes.INTEGER,
       defaultValue: STATUS.active, // Equivalent to STATUS.active
